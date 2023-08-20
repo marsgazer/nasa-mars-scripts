@@ -16,7 +16,7 @@ p=0
 
 while [ $(( $p * 100 )) -lt $n ]
 do
-  curl --no-progress-meter "https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20desc, date_taken%20desc,instrument_sort%20asc,sample_type_sort%20asc&per_page=100&page=0&condition_1=msl:mission&condition_2=$1:sol:gte&condition_3=$1:sol:lte&search=&extended=thumbnail::sample_type::noteq" | python3 -c "import json,sys;obj=json.load(sys.stdin);[print(x['url']) for x in obj['items']];"
+  curl --no-progress-meter "https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20desc, date_taken%20desc,instrument_sort%20asc,sample_type_sort%20asc&per_page=100&page=$p&condition_1=msl:mission&condition_2=$1:sol:gte&condition_3=$1:sol:lte&search=&extended=thumbnail::sample_type::noteq" | python3 -c "import json,sys;obj=json.load(sys.stdin);[print(x['url']) for x in obj['items']];"
   p=$(( $p + 1 ))
 done
 echo "Total: $n"
