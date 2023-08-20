@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+import requests
+import json,sys
+
+this_script=sys.argv[0]
+
+descr=f"""
+Print Perseverance image URLs from a given Sol date
+For example, to print URLs of images from Sol 123, use:
+{this_script} 123"
+"""
+
+def read_json(link):
+  f = requests.get(link)
+  obj=json.loads(f.text)
+  return obj
+
+if len( sys.argv ) == 1:
+  print(descr)
+  sys.exit()
+
+
+date=int(sys.argv[1])
+
+obj = read_json(f"https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020,ingenuity&feedtype=json&ver=1.2&num=10&page=0&=&=&=&=&=&order=sol%20desc&condition_2={date}:sol:gte&condition_3={date}:sol:lte")
+n=int(obj['total_results'])
+
+p=0
+
+while p*100 < n:
+  obj = read_json(f"https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020,ingenuity&feedtype=json&ver=1.2&num=100&page={p}&=&=&=&=&=&order=sol%20desc&condition_2={date}:sol:gte&condition_3={date}:sol:lte")
+  [print(x['image_files']['full_res']) for x in obj['images']]
+  p += 1
+
+print(f"Total: {n}")
+

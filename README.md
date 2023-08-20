@@ -12,7 +12,10 @@ can do what `bash` does.
 
 Nevertheless, these scripts already exist and work.
 
-## Scripts:
+The directory `python3` contains `python3` scripts.
+This should work on Linux, Windows, and Mac OS X (provided that you have the required modules).
+
+## Scripts
 
 `p_urls` - print Perseverance image URLs from a given Sol date.
 

@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+import requests
+import json,sys
+
+this_script=sys.argv[0]
+
+descr=f"""
+Print Curiosity image URLs from a given Sol date
+For example, to print URLs of images from Sol 123, use:
+{this_script} 123"
+"""
+
+def read_json(link):
+  f = requests.get(link)
+  obj=json.loads(f.text)
+  return obj
+
+if len( sys.argv ) == 1:
+  print(descr)
+  sys.exit()
+
+
+date=int(sys.argv[1])
+
+obj = read_json(f"https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20desc, date_taken%20desc,instrument_sort%20asc,sample_type_sort%20asc&per_page=10&page=0&condition_1=msl:mission&condition_2={date}:sol:gte&condition_3={date}:sol:lte&search=&extended=thumbnail::sample_type::noteq")
+n=int(obj['total'])
+
+p=0
+
+while p*100 < n:
+  obj = read_json(f"https://mars.nasa.gov/api/v1/raw_image_items/?order=sol%20desc, date_taken%20desc,instrument_sort%20asc,sample_type_sort%20asc&per_page=100&page={p}&condition_1=msl:mission&condition_2={date}:sol:gte&condition_3={date}:sol:lte&search=&extended=thumbnail::sample_type::noteq")
+  [print(x['url']) for x in obj['items']]
+  p += 1
+
+print(f"Total: {n}")
+
